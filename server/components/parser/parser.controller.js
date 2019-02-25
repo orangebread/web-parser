@@ -1,21 +1,28 @@
+import url from 'url';
 import rp from 'request-promise';
 import cheerio from 'cheerio';
 
 export async function getRawData(req, res) {
 	let imagesSrc = [];
 	try {
-		const url = req.body.url;
-		const html = await rp(url);
-		const $ = cheerio.load(html);
-		const protocol = new URL(url).protocol;
+		const base = req.body.url;
+		const options = {
+			uri: base,
+			method: 'GET',
+			resolveWithFullResponse: true
+		};
+		const html = await rp(options);
+		const $ = cheerio.load(html.body);
 		const text = $.text();
 		const images = $('img');
 
 		// Store image sources
-		for (let i = 0; i < images.length; i++) {
-			//console.log(images[i].attribs.src);
-			imagesSrc.push(protocol + images[i].attribs.src);
-		}
+		images.each( function() {
+			const link = $(this).attr('src');
+			const fullImagePath = url.resolve(base, link);
+			if (isValidImage(fullImagePath))
+				imagesSrc.push(fullImagePath);
+		});
 
 		res.json({
 			success: true,
@@ -28,5 +35,14 @@ export async function getRawData(req, res) {
 	} catch (err) {
 		res.json({ success: false, message: 'Error occurred while performing request', results: err });
 	}
+}
 
+// Helper
+function isValidImage(url) {
+	if(!url || url.match(/(jpg|jpeg|png|svg|gif|bmp|tiff|tif)/)) {
+		return true
+	}
+	else {
+		return false;
+	}
 }

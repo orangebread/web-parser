@@ -1,4 +1,6 @@
 import React  from 'react';
+import _ from 'lodash';
+import Carousel from "./Carousel";
 
 const WordCount = props => {
 	let sanitizedText = props.text.replace(/[^a-zA-Z ]/g, "");
@@ -16,7 +18,14 @@ const WordCount = props => {
 			);
 	}
 
-	console.log(wordFreq(sanitizedText));
+	function sortObjectByValue(object) {
+		delete object[""];
+		return _.fromPairs(_.sortBy(_.toPairs(object), 1).reverse());
+	}
+
+	const sortedObjects = sortObjectByValue(wordFreq(sanitizedText));
+
+	const mostFrequent = Object.entries(sortedObjects).slice(0, 10);
 
 	return (
 		<div className="word-count-container">
@@ -29,18 +38,11 @@ const WordCount = props => {
 					</tr>
 					</thead>
 					<tbody>
-					<tr>
-						<th scope="row">1</th>
-						<td>Mark</td>
-					</tr>
-					<tr>
-						<th scope="row">2</th>
-						<td>Jacob</td>
-					</tr>
-					<tr>
-						<th scope="row">3</th>
-						<td>Larry</td>
-					</tr>
+					{
+						mostFrequent.map((item) => {
+							return <tr><th scope="row">{item[0]}</th><th>{item[1]}</th></tr>
+						})
+					}
 					</tbody>
 				</table>
 			</div>
