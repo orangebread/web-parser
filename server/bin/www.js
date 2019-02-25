@@ -3,20 +3,25 @@
  */
 
 import app from '../app';
-var http = require('http');
-var fs = require('fs');
+import http from 'http';
+import config from '../config';
+
+/*
+* Load environment variables
+* */
+require('dotenv').config();
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(config.port || '3000');
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
