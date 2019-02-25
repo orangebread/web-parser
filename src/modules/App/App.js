@@ -13,7 +13,7 @@ class App extends Component {
 
   onUrlSubmit = async (url) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/parser', {
+      const response = await axios.post('http://localhost:3005/api/parser', {
         url: url
       });
       if (response.data.success) {
