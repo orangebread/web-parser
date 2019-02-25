@@ -15,7 +15,7 @@ require('dotenv').config();
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(config.port || '3000');
+const port = normalizePort(config.port);
 
 /**
  * Create HTTP server.
